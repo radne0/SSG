@@ -5,7 +5,7 @@ from htmlnode import HTMLNode
 from leafnode import LeafNode
 
 class TestHTMLNode(unittest.TestCase):
-    def test_to_html(self):
+    def test_to_html_eq(self):
 
         #basic node
         leaf1 = LeafNode("p", "This is a paragraph of text.")
@@ -14,9 +14,11 @@ class TestHTMLNode(unittest.TestCase):
         leaf2 = LeafNode("a", "Click me!", {"href": "https://www.google.com"})
         leaf3 = LeafNode("a", "Click!", {"href":"https://www.google.com", "target":"_blank"   }    )
 
+        #no tag, plain text...
         leaf4 = LeafNode(None,"hmmm")
 
-        print(leaf1.to_html())
-        print(leaf2.to_html())
-        print(leaf3.to_html())
-        print(leaf4.to_html())
+        self.assertEqual(leaf1.to_html(), "<p>This is a paragraph of text.</p>")
+        self.assertEqual(leaf2.to_html(), "<a href=\"https://www.google.com\">Click me!</a>")  
+        self.assertEqual(leaf3.to_html(), "<a href=\"https://www.google.com\" target=\"_blank\">Click!</a>")
+        self.assertEqual(leaf4.to_html(),"hmmm")
+

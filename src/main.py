@@ -1,10 +1,10 @@
-from textnode import TextNode
-from textnode import TextType
-from leafnode import LeafNode
-
+import node_utils as nu
+from textnode import TextType,TextNode
 
 def main():
-    pass
-
-
+    node = TextNode("This has a `code block` here!",TextType.TEXT)
+    new_nodes = nu.split_nodes_delimiter(node,'`',TextType.CODE)
 main()
+
+
+
