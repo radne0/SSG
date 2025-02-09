@@ -51,3 +51,78 @@ class TestNodeUtils(unittest.TestCase):
         with self.assertRaises(ValueError):
             new_node = nu.text_node_to_html_node(node)
 
+
+    def test_util_splittext_simple_bold(self):
+        node = TextNode("Hello **this text is bold** stuff",TextType.TEXT)
+        out= nu.split_nodes_delimiter([node],"**",TextType.BOLD)
+        self.assertEqual( len(out),3)
+        self.assertEqual( out[0].text_type, TextType.TEXT)
+        self.assertEqual( out[1].text_type, TextType.BOLD)        
+        self.assertEqual( out[2].text_type, TextType.TEXT)
+        self.assertEqual( out[0].text,"Hello "   )   
+        self.assertEqual( out[1].text,"this text is bold"   )   
+        self.assertEqual( out[2].text," stuff"   )   
+
+    def test_util_splittext_bold_start(self):
+        node = TextNode("**this text is bold** stuff",TextType.TEXT)
+        out= nu.split_nodes_delimiter([node],"**",TextType.BOLD)
+        self.assertEqual( len(out),3)
+        self.assertEqual( out[0].text_type, TextType.TEXT)
+        self.assertEqual( out[1].text_type, TextType.BOLD)
+        self.assertEqual( out[2].text_type, TextType.TEXT)
+        self.assertEqual( out[0].text,""   )   
+        self.assertEqual( out[1].text,"this text is bold"   )   
+        self.assertEqual( out[2].text," stuff"   )   
+
+    def test_util_splittext_bold_end(self):
+        node = TextNode("Here is some text **this text is bold**",TextType.TEXT)
+        out= nu.split_nodes_delimiter([node],"**",TextType.BOLD)
+        self.assertEqual( len(out),3)
+        self.assertEqual( out[0].text_type, TextType.TEXT)
+        self.assertEqual( out[1].text_type, TextType.BOLD)
+        self.assertEqual( out[2].text_type, TextType.TEXT)
+        self.assertEqual( out[0].text,"Here is some text "   )   
+        self.assertEqual( out[1].text,"this text is bold"   )   
+        self.assertEqual( out[2].text,""   )   
+
+    def test_util_splittext_bold_and_code(self):
+        node = TextNode("Here is some text. `code here` **bold text** and regular text",TextType.TEXT)
+        out= nu.split_nodes_delimiter([node],"**",TextType.BOLD)
+        out= nu.split_nodes_delimiter(out,"`",TextType.CODE)
+
+        self.assertEqual( len(out),5)
+        self.assertEqual(out[0].text_type, TextType.TEXT)  
+        self.assertEqual(out[1].text_type, TextType.CODE)  
+        self.assertEqual(out[2].text_type, TextType.TEXT)  
+        self.assertEqual(out[3].text_type, TextType.BOLD)  
+        self.assertEqual(out[4].text_type, TextType.TEXT)    
+        self.assertEqual(out[0].text, "Here is some text. ")  
+        self.assertEqual(out[1].text, "code here")  
+        self.assertEqual(out[2].text, " ")  
+        self.assertEqual(out[3].text, "bold text")  
+        self.assertEqual(out[4].text, " and regular text")          
+
+    def test_util_splittext_bold_and_code_italic(self):
+        node = TextNode("Here is some text. `code here` **bold text** and some *italic text*",TextType.TEXT)
+        out= nu.split_nodes_delimiter([node],"**",TextType.BOLD)
+        out= nu.split_nodes_delimiter(out,"*",TextType.ITALIC)        
+        out= nu.split_nodes_delimiter(out,"`",TextType.CODE)
+
+        self.assertEqual( len(out),7)
+        self.assertEqual(out[0].text_type, TextType.TEXT)  
+        self.assertEqual(out[1].text_type, TextType.CODE)  
+        self.assertEqual(out[2].text_type, TextType.TEXT)  
+        self.assertEqual(out[3].text_type, TextType.BOLD)  
+        self.assertEqual(out[4].text_type, TextType.TEXT)    
+        self.assertEqual(out[5].text_type, TextType.ITALIC)  
+        self.assertEqual(out[6].text_type, TextType.TEXT)            
+        self.assertEqual(out[0].text, "Here is some text. ")  
+        self.assertEqual(out[1].text, "code here")  
+        self.assertEqual(out[2].text, " ")  
+        self.assertEqual(out[3].text, "bold text")  
+        self.assertEqual(out[4].text, " and some ")        
+        self.assertEqual(out[5].text, "italic text")    
+        self.assertEqual(out[6].text, "")      
+ 
+
+ 
