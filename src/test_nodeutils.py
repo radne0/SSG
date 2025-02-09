@@ -5,6 +5,22 @@ from leafnode import LeafNode
 import node_utils as nu
 
 class TestNodeUtils(unittest.TestCase):
+
+    def test_util_link(self):
+
+        text1 = "Here's a [simple link](https://example.com)"
+        self.assertEqual(nu.extract_markdown_links(text1),[("simple link", "https://example.com")])
+
+    def test_util_link_double(self):
+        text2 = "[link1](url1) and [link2](url2)"  
+        self.assertEqual(nu.extract_markdown_links(text2), [("link1", "url1"), ("link2", "url2")])
+
+    def test_util_link_empty(self):
+        text3 = "Plain text without links" 
+        self.assertEqual(nu.extract_markdown_links(text3), [])
+
+
+
     def test_util_text(self):
         node = TextNode("Some Text",TextType.TEXT) 
         new_node = nu.text_node_to_html_node(node)
